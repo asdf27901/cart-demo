@@ -10,15 +10,15 @@
 
       <div class="form">
         <div class="form-item">
-          <input class="inp" maxlength="11" placeholder="请输入手机号码" type="text">
+          <input class="inp" maxlength="11" placeholder="请输入手机号码" type="text" v-model="mobile">
         </div>
         <div class="form-item">
-          <input class="inp" maxlength="5" placeholder="请输入图形验证码" type="text">
-          <img src="@/assets/code.png" alt="">
+          <input class="inp" maxlength="4" placeholder="请输入图形验证码" type="text" v-model="captchaCode">
+          <img :src="codeImg" alt="" v-if="codeImg">
         </div>
         <div class="form-item">
-          <input class="inp" placeholder="请输入短信验证码" type="text">
-          <button>获取验证码</button>
+          <input class="inp" placeholder="请输入短信验证码" type="text" v-model="smsCode">
+          <button @click="getSmsCode">获取验证码</button>
         </div>
       </div>
 
@@ -28,8 +28,51 @@
 </template>
 
 <script>
+import { getCaptchaCode, getSmsCode } from '@/api/login'
+
 export default {
-  name: 'LoginIndex'
+  name: 'LoginIndex',
+  data() {
+    return {
+      codeImg: '',
+      mobile: '',
+      captchaCode: '',
+      captchaKey: '',
+      smsCode: ''
+    }
+  },
+  async created () {
+    const { data: { base64, key } } = await getCaptchaCode()
+    this.codeImg = base64
+    this.captchaKey = key
+  },
+  methods: {
+    async getSmsCode() {
+      if (!this.mobile) {
+        return alert('请填写手机号')
+      }
+
+      if (this.mobile.length !== 11) {
+        return alert('请填写正确的手机号')
+      }
+
+      if (!this.captchaCode) {
+        return alert('请填写图形验证码')
+      }
+
+      if (this.captchaCode.length !== 4) {
+        return alert('请输入4位图形验证码')
+      }
+
+      const { message } = await getSmsCode({
+        captchaKey: this.captchaKey,
+        mobile: this.mobile,
+        captchaCode: this.captchaCode
+      })
+
+      return alert(message)
+    }
+  }
 }
 </script>
 
