@@ -7,11 +7,19 @@ const instance = axios.create({
 })
 
 instance.interceptors.request.use(config => {
-
-}, error => Promise.reject(error))
+  const token = localStorage.getItem('token')
+  if (token) {
+    config.headers.token = token
+  }
+  return config
+}, error => {
+  return Promise.reject(error)
+})
 
 instance.interceptors.response.use(response => {
-
-}, error => Promise.reject(error))
+  return response.data
+}, error => {
+  return Promise.reject(error)
+})
 
 export default instance
