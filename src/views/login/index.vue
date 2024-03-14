@@ -18,7 +18,7 @@
         </div>
         <div class="form-item">
           <input class="inp" placeholder="请输入短信验证码" type="text" v-model="smsCode">
-          <button @click="getSmsCode">获取验证码</button>
+          <button @click="buttonHandler" ref="btn">{{ buttonTips }}</button>
         </div>
       </div>
 
@@ -39,6 +39,10 @@ export default {
       captchaCode: '',
       captchaKey: '',
       smsCode: ''
+      smsCode: '',
+      countDown: 60,
+      intervalId: null,
+      buttonTips: '获取验证码'
     }
   },
   async created () {
@@ -66,6 +70,16 @@ export default {
       return true
     },
 
+    buttonHandler() {
+      if (this.validation()) {
+        this.$refs.btn.disabled = true
+        if (!this.intervalId) {
+          this.triggerCountDown()
+        }
+        // await this.getCaptchaCode()
+      }
+    },
+
     async getSmsCode() {
       if (!this.mobile) {
         return alert('请填写手机号')
@@ -90,6 +104,26 @@ export default {
       })
 
       return alert(message)
+    triggerCountDown() {
+      this.buttonTips = `${this.countDown}秒后重新获取`
+
+      this.intervalId = setInterval(() => {
+        this.countDown--
+        this.buttonTips = `${this.countDown}秒后重新获取`
+
+        if (this.countDown === 0) {
+          this.countDown = 60
+          clearInterval(this.intervalId)
+          this.intervalId = null
+          this.buttonTips = '获取验证码'
+          this.$refs.btn.disabled = false
+        }
+      }, 1000)
+    }
+  },
+  destroyed () {
+    if (this.intervalId) {
+      clearInterval(this.intervalId)
     }
   }
 }
@@ -137,6 +171,9 @@ export default {
       color: #cea26a;
       background-color: transparent;
       padding-right: 9px;
+    }
+    button:disabled {
+      color: gray; /* 文字颜色 */
     }
   }
 
