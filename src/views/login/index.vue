@@ -17,18 +17,18 @@
           <img :src="codeImg" alt="" v-if="codeImg" @click="getCaptchaCode">
         </div>
         <div class="form-item">
-          <input class="inp" placeholder="请输入短信验证码" type="text" v-model="smsCode">
+          <input class="inp" placeholder="请输入短信验证码" type="text" v-model="smsCode" maxlength="6">
           <button @click="buttonHandler" ref="btn">{{ buttonTips }}</button>
         </div>
       </div>
 
-      <div class="login-btn">登录</div>
+      <div class="login-btn" @click="sendLogin">登录</div>
     </div>
   </div>
 </template>
 
 <script>
-import { fetchCaptchaCode, fetchSmsCode } from '@/api/login'
+import { fetchCaptchaCode, fetchSmsCode, login } from '@/api/login'
 
 export default {
   name: 'LoginIndex',
@@ -121,6 +121,34 @@ export default {
           this.$refs.btn.disabled = false
         }
       }, 1000)
+    },
+
+    async sendLogin() {
+      if (this.validation() && /^[\d]{6}$/.test(this.smsCode)) {
+        const { status } = await login({
+          isParty: false,
+          mobile: this.mobile,
+          partyData: {},
+          smsCode: this.smsCode
+        })
+
+        if (status === 200) {
+          this.$toast.success({
+            message: '登录成功',
+            forbidClick: true
+          })
+          // 实现toast弹窗关闭后再跳转
+          setTimeout(() => {
+            // this.$toast.clear(true)
+            this.$router.push('/home')
+          }, 1000)
+        } else {
+          this.$toast.fail({
+            message: '验证码错误，请重试',
+            forbidClick: true
+          })
+        }
+      }
     }
   },
   destroyed () {

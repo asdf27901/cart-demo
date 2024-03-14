@@ -22,3 +22,16 @@ export const fetchSmsCode = (params) => {
     }
   })
 }
+
+export const login = (params) => {
+  return request({
+    url: '/passport/login',
+    method: 'post',
+    headers: {
+      platform: 'H5'
+    },
+    data: {
+      form: params
+    }
+  })
+}
