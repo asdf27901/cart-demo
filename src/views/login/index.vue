@@ -79,29 +79,27 @@ export default {
     },
 
     async getSmsCode() {
-      if (!this.mobile) {
-        return alert('请填写手机号')
-      }
-
-      if (this.mobile.length !== 11) {
-        return alert('请填写正确的手机号')
-      }
-
-      if (!this.captchaCode) {
-        return alert('请填写图形验证码')
-      }
-
-      if (this.captchaCode.length !== 4) {
-        return alert('请输入4位图形验证码')
-      }
-
-      const { message } = await getSmsCode({
+      const { status, message } = await fetchSmsCode({
         captchaKey: this.captchaKey,
         mobile: this.mobile,
         captchaCode: this.captchaCode
       })
 
-      return alert(message)
+      status === 200
+        ? this.$toast.success({
+          message: '发送成功',
+          forbidClick: true
+        })
+        : this.$toast.fail({
+          message,
+          forbidClick: true
+        })
+
+      if (message === '图形验证码不存在，请重新获取') {
+        await this.getCaptchaCode()
+      }
+    },
+
     async getCaptchaCode() {
       const { data: { base64, key } } = await fetchCaptchaCode()
       this.codeImg = base64
