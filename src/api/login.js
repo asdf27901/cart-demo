@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-export const getCaptchaCode = () => {
+export const fetchCaptchaCode = () => {
   return request({
     url: '/captcha/image',
     method: 'get',
@@ -10,7 +10,7 @@ export const getCaptchaCode = () => {
   })
 }
 
-export const getSmsCode = (params) => {
+export const fetchSmsCode = (params) => {
   return request({
     url: '/captcha/sendSmsCaptcha',
     method: 'post',

@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import { getCaptchaCode, getSmsCode } from '@/api/login'
+import { fetchCaptchaCode, fetchSmsCode } from '@/api/login'
 
 export default {
   name: 'LoginIndex',
