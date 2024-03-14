@@ -14,7 +14,7 @@
         </div>
         <div class="form-item">
           <input class="inp" maxlength="4" placeholder="请输入图形验证码" type="text" v-model="captchaCode">
-          <img :src="codeImg" alt="" v-if="codeImg">
+          <img :src="codeImg" alt="" v-if="codeImg" @click="getCaptchaCode">
         </div>
         <div class="form-item">
           <input class="inp" placeholder="请输入短信验证码" type="text" v-model="smsCode">
@@ -38,7 +38,6 @@ export default {
       mobile: '',
       captchaCode: '',
       captchaKey: '',
-      smsCode: ''
       smsCode: '',
       countDown: 60,
       intervalId: null,
@@ -46,9 +45,7 @@ export default {
     }
   },
   async created () {
-    const { data: { base64, key } } = await getCaptchaCode()
-    this.codeImg = base64
-    this.captchaKey = key
+    await this.getCaptchaCode()
   },
   methods: {
     validation() {
@@ -75,6 +72,7 @@ export default {
         this.$refs.btn.disabled = true
         if (!this.intervalId) {
           this.triggerCountDown()
+          this.getSmsCode()
         }
         // await this.getCaptchaCode()
       }
@@ -104,6 +102,12 @@ export default {
       })
 
       return alert(message)
+    async getCaptchaCode() {
+      const { data: { base64, key } } = await fetchCaptchaCode()
+      this.codeImg = base64
+      this.captchaKey = key
+    },
+
     triggerCountDown() {
       this.buttonTips = `${this.countDown}秒后重新获取`
 
