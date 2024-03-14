@@ -68,13 +68,21 @@ export default {
     },
 
     buttonHandler() {
-      if (this.validation()) {
-        this.$refs.btn.disabled = true
-        if (!this.intervalId) {
-          this.triggerCountDown()
-          this.getSmsCode()
-        }
-        // await this.getCaptchaCode()
+      // if (!this.validation()) {
+      //   this.$refs.btn.disabled = true
+      //   if (!this.intervalId) {
+      //     this.getSmsCode()
+      //     this.triggerCountDown()
+      //   }
+      //   // await this.getCaptchaCode()
+      // }
+      if (!this.validation()) {
+        return
+      }
+      this.$refs.btn.disabled = true
+      // 没有intervalId并且请求获取验证码成功时才进行倒计时
+      if (!this.intervalId && this.getSmsCode()) {
+        this.triggerCountDown()
       }
     },
 
@@ -85,18 +93,18 @@ export default {
         captchaCode: this.captchaCode
       })
 
-      status === 200
-        ? this.$toast.success({
+      if (status === 200) {
+        this.$toast.success({
           message: '发送成功',
           forbidClick: true
         })
-        : this.$toast.fail({
+        return true
+      } else {
+        this.$toast.fail({
           message,
           forbidClick: true
         })
-
-      if (message === '图形验证码不存在，请重新获取') {
-        await this.getCaptchaCode()
+        return false
       }
     },
 
