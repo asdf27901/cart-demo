@@ -47,6 +47,25 @@ export default {
     this.captchaKey = key
   },
   methods: {
+    validation() {
+      // 手机号正则表达式
+      if (!/^1[34578]\d{9}$/.test(this.mobile)) {
+        this.$toast.fail({
+          message: '请填写正确的手机号',
+          forbidClick: true
+        })
+        return false
+      }
+      if (!/^[A-Za-z\d]{4}$/.test(this.captchaCode)) {
+        this.$toast.fail({
+          message: '请填写4位数验证码',
+          forbidClick: true
+        })
+        return false
+      }
+      return true
+    },
+
     async getSmsCode() {
       if (!this.mobile) {
         return alert('请填写手机号')
