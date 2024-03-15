@@ -29,6 +29,7 @@
 
 <script>
 import { fetchCaptchaCode, fetchSmsCode, login } from '@/api/login'
+import { mapMutations } from 'vuex'
 
 export default {
   name: 'LoginIndex',
@@ -134,7 +135,7 @@ export default {
 
     async sendLogin() {
       if (this.validation() && /^[\d]{6}$/.test(this.smsCode)) {
-        const { status } = await login({
+        const { status, data } = await login({
           isParty: false,
           mobile: this.mobile,
           partyData: {},
@@ -142,6 +143,7 @@ export default {
         })
 
         if (status === 200) {
+          this.setUserInfo(data)
           this.$toast.success({
             message: '登录成功',
             forbidClick: true
@@ -158,7 +160,8 @@ export default {
           })
         }
       }
-    }
+    },
+    ...mapMutations('user', ['setUserInfo'])
   },
   destroyed () {
     if (this.intervalId) {
