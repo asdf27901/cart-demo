@@ -67,7 +67,7 @@ export default {
       return true
     },
 
-    buttonHandler() {
+    async buttonHandler() {
       // if (!this.validation()) {
       //   this.$refs.btn.disabled = true
       //   if (!this.intervalId) {
@@ -79,9 +79,10 @@ export default {
       if (!this.validation()) {
         return
       }
-      this.$refs.btn.disabled = true
       // 没有intervalId并且请求获取验证码成功时才进行倒计时
-      if (!this.intervalId && this.getSmsCode()) {
+      // 异步函数如果不使用await关键字的话会被当做是一个方法，直接当true判断
+      if (!this.intervalId && await this.getSmsCode()) {
+        this.$refs.btn.disabled = true
         this.triggerCountDown()
       }
     },
