@@ -11,6 +11,7 @@ import Home from '@/views/layout/home.vue'
 import Sort from '@/views/layout/sort.vue'
 import Cart from '@/views/layout/cart.vue'
 import My from '@/views/layout/my.vue'
+import store from '@/store'
 
 Vue.use(VueRouter)
 
@@ -37,6 +38,26 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+const AUTH_PAGE_PATH = [
+  '/cart',
+  '/my',
+  '/pay',
+  '/orders'
+]
+
+router.beforeEach((to, from, next) => {
+  if (!AUTH_PAGE_PATH.includes(to.path)) {
+    next()
+    return
+  }
+
+  if (!store.getters['user/token']) {
+    next('/login')
+  } else { // 已登录
+    next()
+  }
 })
 
 export default router
