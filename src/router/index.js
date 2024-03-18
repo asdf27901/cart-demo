@@ -40,6 +40,22 @@ const router = new VueRouter({
   routes
 })
 
+// 当路由跳转被强制取消时，会抛出一个Promise.reject异常，类型为NavigationFailure
+// 官方屏蔽异常方法
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject) { return originalPush.call(this, location, onResolve, onReject) }
+  return originalPush.call(this, location).catch((err) => {
+    if (VueRouter.isNavigationFailure(err)) {
+      console.log(err)
+      // resolve err
+      return err
+    }
+    // rethrow error
+    return Promise.reject(err)
+  })
+}
+
 const AUTH_PAGE_PATH = [
   '/cart',
   '/my',
