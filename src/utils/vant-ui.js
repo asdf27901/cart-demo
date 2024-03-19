@@ -10,7 +10,8 @@ import {
   SwipeItem,
   Lazyload,
   Grid,
-  GridItem
+  GridItem,
+  Icon
 } from 'vant'
 
 Vue.use(Button)
@@ -24,3 +25,4 @@ Vue.use(SwipeItem)
 Vue.use(Lazyload)
 Vue.use(Grid)
 Vue.use(GridItem)
+Vue.use(Icon)
