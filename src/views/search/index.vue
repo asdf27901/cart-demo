@@ -2,9 +2,15 @@
   <div class="search">
     <van-nav-bar title="商品搜索" left-arrow @click-left="$router.go(-1)" />
 
-    <van-search show-action placeholder="请输入搜索关键词" clearable>
+    <van-search
+      show-action
+      placeholder="请输入搜索关键词"
+      clearable
+      v-model="value"
+      @search="onSearch"
+    >
       <template #action>
-        <div>搜索</div>
+        <div @click="onSearch">搜索</div>
       </template>
     </van-search>
 
@@ -25,15 +31,21 @@
 </template>
 
 <script>
+import { searchGood } from '@/api/search'
+
 export default {
   name: 'SearchIndex',
   data: () => {
     return {
-      searchData: []
+      recentlySearchList: [],
+      value: ''
     }
   },
   methods: {
-
+    async onSearch() {
+      const res = await searchGood(this.value)
+      console.log(res)
+    }
   }
 }
 </script>
