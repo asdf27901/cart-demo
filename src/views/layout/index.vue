@@ -1,7 +1,14 @@
 <template>
   <div>
     <!--二级标签区域-->
-    <router-view></router-view>
+    <!--
+    如果一级路由之间跳转需要缓存一级路由的话只需要一级路由上包裹<keep-alive>
+    如果一级路由到二级路由跳转需要缓存一级路由的话也是只需要在一级路由上包裹<keep-alive>
+    如果是二级路由到一级路由上跳转需要缓存二级路由的话，则需要在一级路由和一级路由下的二级路由包裹<keep-alive>
+    -->
+    <keep-alive include="HomePage">
+      <router-view></router-view>
+    </keep-alive>
 
     <!--标签栏切换-->
     <van-tabbar v-model="active" route>
