@@ -32,7 +32,7 @@ const routes = [
   { name: '搜索页', path: '/search', component: Search },
   { name: '搜索列表', path: '/searchList', component: SearchList },
   { name: '支付页', path: '/pay', component: Pay },
-  { name: '详情页', path: '/detail', component: Detail },
+  { name: '详情页', path: '/detail/:good_id', component: Detail },
   { name: '订单页', path: '/orders', component: Orders },
 ]
 

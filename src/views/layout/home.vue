@@ -18,42 +18,64 @@
     </van-search>
 
     <van-swipe :autoplay="3000" width="100%">
-      <van-swipe-item v-for="(image, index) in images" :key="index">
-        <img v-lazy="image" />
+      <van-swipe-item v-for="item in bannerList" :key="item.imgUrl">
+        <img v-lazy="item.imgUrl" />
       </van-swipe-item>
     </van-swipe>
 
     <van-grid
-      :column-num="grids.length / 2"
+      :column-num="navBarList.length / 2"
       square
       icon-size="40"
     >
       <van-grid-item
-        v-for="(item, index) in grids"
-        :icon="item.pic"
+        v-for="item in navBarList"
+        :icon="item.imgUrl"
         :text="item.text"
-        :key="index"
+        :key="item.imgUrl"
       />
     </van-grid>
+
+    <div class="main">
+      <img src="@/assets/main.png" alt="">
+    </div>
+
+    <div class="guess">
+      <p class="guess-title">—— 猜你喜欢 ——</p>
+
+      <div class="goods-list">
+        <GoodItem
+          v-for="item in goodList"
+          :key="item.goods_id"
+          :good="item"
+        ></GoodItem>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { fetchHomeDetail } from '@/api/home'
+import GoodItem from '@/components/GoodItem.vue'
 
 export default {
   name: 'HomePage',
+  components: {
+    GoodItem
+  },
   data: () => {
     return {
       searchData: '',
-      images: [],
-      grids: []
+      bannerList: [],
+      navBarList: [],
+      goodList: []
     }
   },
   async created () {
     const { data: { pageData: { items } } } = await fetchHomeDetail()
-    this.images = items[1].data.map(v => v.imgUrl)
-    this.grids = items[4].data.map(v => ({ pic: v.imgUrl, text: v.text }))
+    this.bannerList = items[1].data
+    this.navBarList = items[4].data
+    this.goodList = items[6].data
   }
 }
 </script>
@@ -85,6 +107,17 @@ export default {
   .van-swipe .van-swipe-item img {
     width: 100%;
     height: 185px;
+  }
+  // 主会场
+  .main img {
+    display: block;
+    width: 100%;
+  }
+  // 猜你喜欢
+  .guess .guess-title {
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
   }
 }
 </style>
