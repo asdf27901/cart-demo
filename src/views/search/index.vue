@@ -21,20 +21,24 @@
         <van-icon name="delete-o" size="16" />
       </div>
       <div class="list">
-        <div class="list-item" @click="$router.push('/searchlist')">炒锅</div>
-        <div class="list-item" @click="$router.push('/searchlist')">电视</div>
-        <div class="list-item" @click="$router.push('/searchlist')">冰箱</div>
-        <div class="list-item" @click="$router.push('/searchlist')">手机</div>
+        <div class="list-item" @click="$router.push('/searchlist')" v-for="item in recentlySearchList" :key="item">{{ item }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { searchGood } from '@/api/search'
+// import { searchGood } from '@/api/search'
+
+import index from 'vuex'
 
 export default {
   name: 'SearchIndex',
+  computed: {
+    index () {
+      return index
+    }
+  },
   data: () => {
     return {
       recentlySearchList: [],
@@ -43,8 +47,16 @@ export default {
   },
   methods: {
     async onSearch() {
-      const res = await searchGood(this.value)
-      console.log(res)
+      // 通过交换赋值的方法无法让vue检测到
+      // 需要实际修改数组长度才行
+      const index = this.recentlySearchList.findIndex(value => value === this.value)
+      if (index >= 0) {
+        this.recentlySearchList = this.recentlySearchList.toSpliced(index, 1)
+      }
+      this.recentlySearchList.unshift(this.value)
+
+      // const res = await searchGood(this.value)
+      // console.log(res)
     }
   }
 }
