@@ -8,13 +8,10 @@
 
     <van-search
       shape="round"
-      show-action
       placeholder="请输入商品名称"
       clearable
+      @focus="$router.push('/search')"
     >
-      <template #action>
-        <div>搜索</div>
-      </template>
     </van-search>
 
     <van-swipe :autoplay="3000" width="100%">
