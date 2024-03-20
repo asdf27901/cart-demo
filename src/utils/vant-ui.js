@@ -11,7 +11,8 @@ import {
   Lazyload,
   Grid,
   GridItem,
-  Icon
+  Icon,
+  Empty
 } from 'vant'
 
 Vue.use(Button)
@@ -26,3 +27,4 @@ Vue.use(Lazyload)
 Vue.use(Grid)
 Vue.use(GridItem)
 Vue.use(Icon)
+Vue.use(Empty)
