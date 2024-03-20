@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home" v-show="isShow">
     <van-nav-bar
       title="智慧商城"
       fixed
@@ -62,7 +62,7 @@ export default {
   },
   data: () => {
     return {
-      searchData: '',
+      isShow: false,
       bannerList: [],
       navBarList: [],
       goodList: []
@@ -70,6 +70,7 @@ export default {
   },
   async created () {
     const { data: { pageData: { items } } } = await fetchHomeDetail()
+    this.isShow = true
     this.bannerList = items[1].data
     this.navBarList = items[4].data
     this.goodList = items[6].data

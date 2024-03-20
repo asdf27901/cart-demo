@@ -6,58 +6,84 @@
       show-action
       placeholder="请输入搜索关键词"
       clearable
-      v-model="value"
-      @search="onSearch"
+      v-model.trim="value"
+      @search="onSearch(value)"
     >
       <template #action>
-        <div @click="onSearch">搜索</div>
+        <div @click="onSearch(value)">搜索</div>
       </template>
     </van-search>
 
     <!-- 搜索历史 -->
-    <div class="search-history">
+    <div class="search-history" v-if="recentlySearchList.length !== 0">
       <div class="title">
         <span>最近搜索</span>
-        <van-icon name="delete-o" size="16" />
+        <van-icon name="delete-o" size="16" @click="recentlySearchList = []"/>
       </div>
       <div class="list">
-        <div class="list-item" @click="$router.push('/searchlist')" v-for="item in recentlySearchList" :key="item">{{ item }}</div>
+        <div
+          class="list-item"
+          @click="onSearch(item)"
+          v-for="item in recentlySearchList"
+          :key="item"
+        >{{ item }}</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import { searchGood } from '@/api/search'
-
-import index from 'vuex'
+import { Toast } from 'vant'
+import { getLocalItem, setLocalItem } from '@/utils/storage'
 
 export default {
   name: 'SearchIndex',
-  computed: {
-    index () {
-      return index
-    }
-  },
   data: () => {
     return {
       recentlySearchList: [],
       value: ''
     }
   },
+  created () {
+    const searchList = getLocalItem('searchList')
+    this.recentlySearchList = searchList || []
+  },
   methods: {
-    async onSearch() {
+    async onSearch(v) {
+      // 如果字符串为空则显示toast弹窗
+      if (!v) {
+        return Toast.fail({
+          duration: 1000,
+          message: '请输入搜索内容',
+          forbidClick: true
+        })
+      }
       // 通过交换赋值的方法无法让vue检测到
       // 需要实际修改数组长度才行
-      const index = this.recentlySearchList.findIndex(value => value === this.value)
+      const index = this.recentlySearchList.findIndex(value => value === v)
       if (index >= 0) {
         this.recentlySearchList = this.recentlySearchList.toSpliced(index, 1)
       }
-      this.recentlySearchList.unshift(this.value)
-
-      // const res = await searchGood(this.value)
-      // console.log(res)
+      this.recentlySearchList.unshift(v)
+      this.$router.push({
+        path: '/searchList',
+        query: {
+          search: v
+        }
+      })
     }
+  },
+  watch: {
+    // 监听搜索历史数据，发生变动修改本地缓存中的数据
+    recentlySearchList: {
+      deep: true,
+      handler: newVal => {
+        setLocalItem('searchList', newVal)
+      }
+    }
+  },
+  deactivated () {
+    this.value = ''
   }
 }
 </script>
