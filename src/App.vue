@@ -1,5 +1,5 @@
 <template>
-  <keep-alive>
+  <keep-alive exclude="SearchList">
     <router-view></router-view>
   </keep-alive>
 
