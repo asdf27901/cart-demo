@@ -1,5 +1,4 @@
 <template>
-  <div>搜索列表</div>
   <div class="search">
     <van-nav-bar fixed title="商品列表" left-arrow @click-left="$router.go(-1)" />
 
@@ -43,6 +42,7 @@
     <div
       class="goods-list"
       v-if="goodsList.length !== 0"
+      v-loading:block="isLoading"
     >
       <GoodItem v-for="good in goodsList" :key="good.goods_id" :good="good"></GoodItem>
     </div>
@@ -53,12 +53,12 @@
 import GoodItem from '@/components/GoodItem.vue'
 import { searchGood } from '@/api/search'
 export default {
-  name: 'SearchList'
   name: 'SearchList',
   data: () => {
     return {
       goodsList: [],
       isShow: false,
+      isLoading: false
     }
   },
   components: {
@@ -72,9 +72,11 @@ export default {
   },
   methods: {
     async search(obj) {
+      this.isLoading = true
       const { data: { list: { data } } } = await searchGood(obj)
       this.goodsList = data
       this.isShow = this.goodsList.length === 0
+      this.isLoading = false
     }
   }
 }
