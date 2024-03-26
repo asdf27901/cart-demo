@@ -72,7 +72,7 @@ export default {
     const { data: { pageData: { items } } } = await fetchHomeDetail()
     this.isShow = true
     this.bannerList = items[1].data
-    this.navBarList = items[4].data
+    this.navBarList = items[3].data
     this.goodList = items[6].data
   }
 }
