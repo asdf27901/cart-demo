@@ -12,7 +12,11 @@ import {
   Grid,
   GridItem,
   Icon,
-  Empty
+  Empty,
+  GoodsAction,
+  GoodsActionIcon,
+  GoodsActionButton,
+  Rate
 } from 'vant'
 
 Vue.use(Button)
@@ -28,3 +32,7 @@ Vue.use(Grid)
 Vue.use(GridItem)
 Vue.use(Icon)
 Vue.use(Empty)
+Vue.use(GoodsAction)
+Vue.use(GoodsActionIcon)
+Vue.use(GoodsActionButton)
+Vue.use(Rate)
