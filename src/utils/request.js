@@ -5,7 +5,7 @@ import { Toast } from 'vant'
 // 创建axios实例，多个实例互不影响
 const request = axios.create({
   baseURL: 'http://cba.itlike.com/public/index.php?s=/api/',
-  timeout: 2000,
+  timeout: 3000,
   _retryCount: 0,
   retryTime: 3,
   retryDelay: 1000
