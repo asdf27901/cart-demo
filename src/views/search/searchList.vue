@@ -12,7 +12,7 @@
       @click="$router.push('/search')"
     >
       <template #action>
-        <van-icon class="tool" name="apps-o" />
+        <van-icon class="tool" name="apps-o" @click="$router.push('/sort')"/>
       </template>
     </van-search>
 
@@ -20,15 +20,28 @@
     <div class="sort-btns" v-if="goodsList.length !== 0">
       <div
         class="sort-item"
-        @click="search({sortType: 'all', goodsName: $route.query.search})"
+        @click="search({
+        sortType: 'all',
+        goodsName: $route.query.search,
+        categoryId: $route.query.sortId
+        })"
       >综合</div>
       <div
         class="sort-item"
-        @click="search({sortType: 'sales', goodsName: $route.query.search})"
+        @click="search({
+        sortType: 'sales',
+        goodsName: $route.query.search,
+        categoryId: $route.query.sortId
+        })"
       >销量</div>
       <div
         class="sort-item"
-        @click="search({sortType: 'price', goodsName: $route.query.search, sortPrice: 1})"
+        @click="search({
+        sortType: 'price',
+        goodsName: $route.query.search,
+        sortPrice: 1,
+        categoryId: $route.query.sortId
+        })"
       >价格 </div>
     </div>
 
@@ -67,7 +80,8 @@ export default {
   created () {
     this.search({
       sortType: 'all',
-      goodsName: this.$route.query.search
+      goodsName: this.$route.query.search,
+      categoryId: this.$route.query.sortId
     })
   },
   methods: {
