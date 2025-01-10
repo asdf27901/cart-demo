@@ -8,13 +8,14 @@ const request = axios.create({
   timeout: 3000,
   _retryCount: 0,
   retryTime: 3,
-  retryDelay: 1000
+  retryDelay: 1000,
+  retry_codes: ['ECONNABORTED', 'ETIMEDOUT', 'ERR_NETWORK']
 })
 
 request.interceptors.request.use(config => {
   // 发起请求前添加loading弹窗
   Toast.loading({
-    message: '加载中...',
+    message: config._retryCount > 0 ? '正在重试...请稍后' : '加载中...',
     forbidClick: true,
     duration: 0,
     loadingType: 'spinner'
@@ -34,9 +35,10 @@ request.interceptors.response.use(response => {
   Toast.clear(true) // 关闭所有弹窗，主要是loading弹窗
   return response.data
 }, async error => {
+  console.log(error)
   const config = error.config
   // 如果没有配置对象，直接返回异常
-  if (!config) {
+  if (!config || !config.retry_codes.includes(error.code)) {
     return Promise.reject(error)
   }
   // 当重试次数大于配置次数，直接返回异常
@@ -44,10 +46,6 @@ request.interceptors.response.use(response => {
     Toast('重试失败，请刷新页面')
     return Promise.reject(error)
   }
-  Toast.fail({
-    message: '正在重试...请稍后',
-    forbidClick: true
-  })
   // 以下代码开始请求重试
   config._retryCount++
   console.log(config._retryCount)
