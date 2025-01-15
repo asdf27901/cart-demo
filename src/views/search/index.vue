@@ -49,7 +49,7 @@ export default {
     this.recentlySearchList = searchList || []
   },
   methods: {
-    async onSearch(v) {
+    onSearch(v) {
       // 如果字符串为空则显示toast弹窗
       if (!v) {
         return Toast.fail({
@@ -65,11 +65,13 @@ export default {
         this.recentlySearchList = this.recentlySearchList.toSpliced(index, 1)
       }
       this.recentlySearchList.unshift(v)
-      this.$router.push({
-        path: '/searchList',
-        query: {
-          search: v
-        }
+      this.$nextTick(() => {
+        this.$router.push({
+          path: '/searchList',
+          query: {
+            search: v
+          }
+        })
       })
     }
   },
