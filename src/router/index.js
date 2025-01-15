@@ -22,8 +22,8 @@ const routes = [
     path: '/',
     component: Layout,
     children: [
-      { name: '主页', path: '/home', component: Home },
-      { name: '分类', path: '/sort', component: Sort },
+      { name: '主页', path: '/home', component: Home, meta: { cache: true } },
+      { name: '分类', path: '/sort', component: Sort, meta: { cache: true } },
       { name: '购物车', path: '/cart', component: Cart },
       { name: '我的', path: '/my', component: My },
     ],

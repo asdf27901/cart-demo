@@ -81,9 +81,6 @@ export default {
         setLocalItem('searchList', newVal)
       }
     }
-  },
-  deactivated () {
-    this.value = ''
   }
 }
 </script>

@@ -4,8 +4,12 @@ import router from './router'
 import store from './store'
 import '@/utils/vant-ui'
 import '@/style/common.less'
+import KeepAliveRouterView from 'keep-alive-router-view'
+
+Vue.use(KeepAliveRouterView)
 
 Vue.config.productionTip = false
+Vue.config.devtools = true
 
 Vue.directive('loading', {
   update: (el, binding) => {

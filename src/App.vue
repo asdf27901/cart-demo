@@ -1,7 +1,5 @@
 <template>
-  <keep-alive :exclude="['SearchList', 'DetailIndex']">
-    <router-view></router-view>
-  </keep-alive>
+  <keep-alive-router-view></keep-alive-router-view>
 </template>
 
 <script>
