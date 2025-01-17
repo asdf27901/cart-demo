@@ -19,7 +19,8 @@ import {
   Rate,
   ActionSheet,
   Dialog,
-  Badge
+  Badge,
+  Checkbox
 } from 'vant'
 
 Vue.use(Button)
@@ -42,3 +43,4 @@ Vue.use(Rate)
 Vue.use(ActionSheet)
 Vue.use(Dialog)
 Vue.use(Badge)
+Vue.use(Checkbox)
