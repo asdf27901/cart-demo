@@ -1,5 +1,5 @@
 <template>
-  <keep-alive-router-view></keep-alive-router-view>
+  <keep-alive-router-view :cache="$route.meta.cache" :default-cache="true"></keep-alive-router-view>
 </template>
 
 <script>
