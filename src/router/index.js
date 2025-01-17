@@ -12,6 +12,7 @@ import Sort from '@/views/layout/sort.vue'
 import Cart from '@/views/layout/cart.vue'
 import My from '@/views/layout/my.vue'
 import store from '@/store'
+import { getLocalItem } from '@/utils/storage'
 
 Vue.use(VueRouter)
 
@@ -68,7 +69,7 @@ router.beforeEach((to, from, next) => {
     return
   }
 
-  if (!store.getters['user/token']) {
+  if (!store.getters['user/token'] && !getLocalItem('userInfo')) {
     next('/login')
   } else { // 已登录
     next()
