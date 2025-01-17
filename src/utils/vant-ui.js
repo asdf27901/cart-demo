@@ -16,7 +16,10 @@ import {
   GoodsAction,
   GoodsActionIcon,
   GoodsActionButton,
-  Rate
+  Rate,
+  ActionSheet,
+  Dialog,
+  Badge
 } from 'vant'
 
 Vue.use(Button)
@@ -36,3 +39,6 @@ Vue.use(GoodsAction)
 Vue.use(GoodsActionIcon)
 Vue.use(GoodsActionButton)
 Vue.use(Rate)
+Vue.use(ActionSheet)
+Vue.use(Dialog)
+Vue.use(Badge)

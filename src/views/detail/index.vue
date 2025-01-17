@@ -65,37 +65,125 @@
 
     <!-- 底部 -->
     <van-goods-action>
-      <van-goods-action-icon icon="wap-home-o" text="首页"/>
-      <van-goods-action-icon icon="cart-o" text="购物车" badge="99" />
-      <van-goods-action-button type="warning" text="加入购物车" />
-      <van-goods-action-button type="danger" text="立即购买" />
+      <van-goods-action-icon icon="wap-home-o" text="首页" @click="$router.replace('/home')"/>
+      <van-goods-action-icon icon="cart-o" text="购物车" :badge="cartTotal > 0 ? cartTotal : ''" @click="$router.replace('/cart')"/>
+      <van-goods-action-button type="warning" text="加入购物车" @click="clickBtn('加入购物车')"/>
+      <van-goods-action-button type="danger" text="立即购买" @click="clickBtn('立即购买')"/>
     </van-goods-action>
+
+    <van-action-sheet v-model="showSheet" :title="title">
+      <div class="product">
+        <div class="product-title">
+          <div class="left">
+            <img :src="goodDetail.goods_image" alt="">
+          </div>
+          <div class="right">
+            <div class="price">
+              <span>¥</span>
+              <span class="nowprice">{{ goodDetail.goods_price_min }}</span>
+            </div>
+            <div class="count">
+              <span>库存</span>
+              <span>{{ goodDetail.stock_total }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="num-box">
+          <span>数量</span>
+          <!-- v-model 本质上 :value 和 @input 的简写 -->
+          <CustomStepper v-model="buyCount"></CustomStepper>
+        </div>
+
+<!--         有库存才显示提交按钮-->
+        <div class="showbtn" v-if="goodDetail.stock_total > 0">
+          <div class="btn" v-if="title === '加入购物车'" @click="joinCartOrBuy">加入购物车</div>
+          <div class="btn now" v-else @click="joinCartOrBuy">立刻购买</div>
+        </div>
+
+        <div class="btn-none" v-else>该商品已抢完</div>
+      </div>
+    </van-action-sheet>
   </div>
 </template>
 
 <script>
 import { fetchGoodDetail } from '@/api/goods'
 import { fetchCommentList, fetchCommentTotalCount } from '@/api/comment'
+import CustomStepper from '@/components/CustomStepper.vue'
+import { Dialog, Toast } from 'vant'
+import { addCard, cartCount } from '@/api/cart'
 
 export default {
   name: 'DetailIndex',
   async created () {
     const goodId = this.$route.params.good_id
-    const [{ data: { detail } }, { data: { list } }, { data: { total: { all } } }] = await Promise.all([
+    const [
+      { data: { detail } },
+      { data: { list } },
+      { data: { total: { all } } },
+      { data: { cartTotal } }
+    ] = await Promise.all([
       fetchGoodDetail(goodId),
       fetchCommentList(goodId),
-      fetchCommentTotalCount(goodId)
+      fetchCommentTotalCount(goodId),
+      cartCount()
     ])
     this.goodDetail = detail
     this.commentList = list.reverse()
     this.totalComment = all
+    this.cartTotal = cartTotal
+  },
+  components: {
+    CustomStepper
   },
   data () {
     return {
       goodDetail: {},
       commentList: [],
-      totalComment: ''
+      totalComment: '',
+      showSheet: false,
+      title: '',
+      buyCount: 1,
+      cartTotal: 0
     }
+  },
+  methods: {
+    clickBtn(title) {
+      this.showSheet = !this.showSheet
+      this.title = title
+    },
+    async joinCartOrBuy() {
+      if (!this.$store.getters['user/token']) {
+        Dialog.confirm({
+          title: '温馨提示',
+          message: '此时需要登录才能继续操作哦',
+          confirmButtonText: '去登录',
+          cancelButtonText: '再逛逛'
+        }).then(() => {
+          this.$router.replace({
+            path: '/login',
+            query: {
+              back: this.$route.fullPath
+            }
+          })
+        }).catch(() => {
+          Dialog.close()
+        })
+      } else {
+        const res = await addCard(this.goodDetail.goods_id, this.buyCount, this.goodDetail.skuList[0].goods_sku_id)
+        Toast.success({
+          message: res.message,
+          forbidClick: true,
+          onClose: () => {
+            this.cartTotal = res.data.cartTotal
+            this.showSheet = !this.showSheet
+          }
+        })
+      }
+    }
+  },
+  watch: {
+
   }
 }
 </script>
@@ -236,5 +324,54 @@ export default {
 
 .tips {
   padding: 10px;
+}
+
+// 弹层的样式
+.product {
+  .product-title {
+    display: flex;
+    .left {
+      img {
+        width: 90px;
+        height: 90px;
+      }
+      margin: 10px;
+    }
+    .right {
+      flex: 1;
+      padding: 10px;
+      .price {
+        font-size: 14px;
+        color: #fe560a;
+        .nowprice {
+          font-size: 24px;
+          margin: 0 5px;
+        }
+      }
+    }
+  }
+
+  .num-box {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    align-items: center;
+  }
+
+  .btn, .btn-none {
+    height: 40px;
+    line-height: 40px;
+    margin: 20px;
+    border-radius: 20px;
+    text-align: center;
+    color: rgb(255, 255, 255);
+    background-color: rgb(255, 148, 2);
+  }
+  .btn.now {
+    background-color: #fe5630;
+  }
+  .btn-none {
+    background-color: #cccccc;
+  }
 }
 </style>

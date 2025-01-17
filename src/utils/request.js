@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { Toast } from 'vant'
-// import store from '@/store'
+import store from '@/store'
 
 // 创建axios实例，多个实例互不影响
 const request = axios.create({
@@ -21,10 +21,11 @@ request.interceptors.request.use(config => {
     loadingType: 'spinner'
   })
   // 如果本地存在token，则将token放入请求头中
-  const token = localStorage.getItem('token')
-  if (typeof token !== 'undefined') {
-    config.headers.token = token
+  const token = store.getters['user/token']
+  if (token) {
+    config.headers['Access-Token'] = token
   }
+  config.headers.platform = 'H5'
   return config
 }, error => {
   return Promise.reject(error)

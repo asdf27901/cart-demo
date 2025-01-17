@@ -151,7 +151,11 @@ export default {
           // 实现toast弹窗关闭后再跳转
           setTimeout(() => {
             // this.$toast.clear(true)
-            this.$router.push('/home')
+            if (this.$route.query.back) {
+              this.$router.replace(this.$route.query.back)
+            } else {
+              this.$router.replace('/home')
+            }
           }, 1000)
         } else {
           this.$toast.fail({
