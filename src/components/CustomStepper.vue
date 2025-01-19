@@ -1,7 +1,7 @@
 <template>
   <div class="stepper">
     <button class="minus" @click="$emit('input', value - 1)" :disabled="value <= 1">-</button>
-    <input type="text" class="inp" :value="value">
+    <input type="text" class="inp" :value="value" @change="$emit('input', parseInt($event.target.value))">
     <button class="add" @click="$emit('input', value + 1)">+</button>
   </div>
 </template>
