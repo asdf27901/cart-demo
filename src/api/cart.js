@@ -17,3 +17,21 @@ export const cartCount = () => {
     url: '/cart/total'
   })
 }
+
+export const fetchCartList = () => {
+  return request({
+    url: '/cart/list'
+  })
+}
+
+export const updateCart = (goodsId, goodsNum, goodsSkuId) => {
+  return request({
+    url: '/cart/update',
+    method: 'post',
+    data: {
+      goodsId,
+      goodsNum,
+      goodsSkuId
+    }
+  })
+}
