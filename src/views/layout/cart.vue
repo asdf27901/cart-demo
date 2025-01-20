@@ -2,52 +2,61 @@
   <div class="cart">
     <van-nav-bar title="购物车" fixed />
     <!-- 购物车开头 -->
-    <div class="cart-title">
-      <span class="all">共<i>{{ goodsNum }}</i>件商品</span>
-      <span class="edit">
+    <div v-if="cartList.length > 0">
+      <div class="cart-title">
+        <span class="all">共<i>{{ goodsNum }}</i>件商品</span>
+        <span class="edit" @click="isEdit = !isEdit">
         <van-icon name="edit" />
-        编辑
+        {{ isEdit ? '退出编辑': '编辑' }}
       </span>
-    </div>
+      </div>
 
-    <!-- 购物车列表 -->
-    <div class="cart-list">
-      <div class="cart-item" v-for="item in cartList" :key="item.id">
-        <van-checkbox :value="item.isChecked" @click="$store.commit('cart/changeCheckStatus', item.id)"></van-checkbox>
-        <div class="show">
-          <img :src="item.goods.goods_image" alt="">
-        </div>
-        <div class="info">
-          <span class="tit text-ellipsis-2">{{ item.goods.goods_name }}</span>
-          <span class="bottom">
+      <!-- 购物车列表 -->
+      <div class="cart-list">
+        <div class="cart-item" v-for="item in cartList" :key="item.id">
+          <van-checkbox :value="item.isChecked" @click="$store.commit('cart/changeCheckStatus', item.id)"></van-checkbox>
+          <div class="show">
+            <img :src="item.goods.goods_image" alt="">
+          </div>
+          <div class="info">
+            <span class="tit text-ellipsis-2">{{ item.goods.goods_name }}</span>
+            <span class="bottom">
             <div class="price">
               ¥ <span>{{ item.goods.goods_price_min }}</span>
             </div>
-<!--            <div class="count-box">-->
-<!--              <button class="minus">-</button>-->
-<!--              <input class="inp" :value="item.goods_num" type="text" readonly>-->
-<!--              <button class="add">+</button>-->
-<!--            </div>-->
+              <!--            <div class="count-box">-->
+              <!--              <button class="minus">-</button>-->
+              <!--              <input class="inp" :value="item.goods_num" type="text" readonly>-->
+              <!--              <button class="add">+</button>-->
+              <!--            </div>-->
             <CustomStepper :value="item.goods_num" @input="$store.dispatch('cart/updateCartAction', {goodsId: item.goods_id, goodsNum: $event, goodsSkuId: item.goods.skuInfo.goods_sku_id})"></CustomStepper>
           </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-fixed">
+        <div  class="all-check">
+          <van-checkbox  icon-size="18" v-model="selectAll"></van-checkbox>
+          全选
+        </div>
+
+        <div class="all-total">
+          <div class="price">
+            <span>合计：</span>
+            <span>¥ <i class="totalPrice">{{ totalPrice }}</i></span>
+          </div>
+          <div v-if="!isEdit" class="goPay" :class="{disabled: checkedNum <= 0}" @click="$router.push('/pay')">结算({{ checkedNum }})</div>
+          <div v-else class="delete" :class="{disabled: checkedNum <= 0}" @click="del">删除({{ checkedNum }})</div>
         </div>
       </div>
     </div>
-
-    <div class="footer-fixed">
-      <div  class="all-check">
-        <van-checkbox  icon-size="18" v-model="selectAll"></van-checkbox>
-        全选
+    <div class="empty-cart" v-else>
+      <img src="@/assets/empty.png" alt="">
+      <div class="tips">
+        您的购物车是空的，快去逛逛吧
       </div>
-
-      <div class="all-total">
-        <div class="price">
-          <span>合计：</span>
-          <span>¥ <i class="totalPrice">{{ totalPrice }}</i></span>
-        </div>
-        <div v-if="true" class="goPay" :class="{disabled: checkedNum <= 0}">结算({{ checkedNum }})</div>
-        <div v-else class="delete">删除</div>
-      </div>
+      <div class="btn" @click="$router.replace('/')">去逛逛</div>
     </div>
   </div>
 </template>
@@ -57,6 +66,11 @@ import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
 import CustomStepper from '@/components/CustomStepper.vue'
 export default {
   name: 'CartPage',
+  data() {
+    return {
+      isEdit: false
+    }
+  },
   components: {
     CustomStepper
   },
@@ -77,7 +91,24 @@ export default {
   },
   methods: {
     ...mapActions('cart', ['getCartList']),
-    ...mapMutations('cart', ['changeCheckStatusByChecked'])
+    ...mapMutations('cart', ['changeCheckStatusByChecked']),
+    del() {
+      if (this.checkedNum <= 0) {
+        this.$toast.fail({
+          message: '请勾选需要删除的商品',
+          forbidClick: true
+        })
+        return
+      }
+      this.$store.dispatch('cart/deleteCartAction').then(res => {
+        this.$toast.success({
+          message: res
+        })
+        setTimeout(() => {
+          this.$store.dispatch('cart/getCartList')
+        }, 1500)
+      })
+    }
   }
 }
 </script>
@@ -216,5 +247,31 @@ export default {
     }
   }
 
+}
+
+.empty-cart {
+  padding: 80px 30px;
+  img {
+    width: 140px;
+    height: 92px;
+    display: block;
+    margin: 0 auto;
+  }
+  .tips {
+    text-align: center;
+    color: #666;
+    margin: 30px;
+  }
+  .btn {
+    width: 110px;
+    height: 32px;
+    line-height: 32px;
+    text-align: center;
+    background-color: #fa2c20;
+    border-radius: 16px;
+    color: #fff;
+    display: block;
+    margin: 0 auto;
+  }
 }
 </style>

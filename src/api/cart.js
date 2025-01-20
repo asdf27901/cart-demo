@@ -35,3 +35,13 @@ export const updateCart = (goodsId, goodsNum, goodsSkuId) => {
     }
   })
 }
+
+export const deleteCartIds = cartIds => {
+  return request({
+    url: '/cart/clear',
+    method: 'post',
+    data: {
+      cartIds
+    }
+  })
+}

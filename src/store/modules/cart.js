@@ -1,4 +1,4 @@
-import { fetchCartList, updateCart } from '@/api/cart'
+import { fetchCartList, updateCart, deleteCartIds } from '@/api/cart'
 
 const state = {
   cartList: []
@@ -40,6 +40,12 @@ const actions = {
     } catch (e) {
       console.log(e)
     }
+  },
+
+  async deleteCartAction(context) {
+    const cartIds = context.getters.checkedGoods.map(v => v.id)
+    const res = await deleteCartIds(cartIds)
+    return Promise.resolve(res.message)
   }
 }
 
