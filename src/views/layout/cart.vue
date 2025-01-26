@@ -51,7 +51,8 @@
         </div>
       </div>
     </div>
-    <div class="empty-cart" v-else>
+<!--    v-loading为了解决数据还没有加载出来显示empty页面的问题-->
+    <div class="empty-cart" v-else v-loading:block="isLoading">
       <img src="@/assets/empty.png" alt="">
       <div class="tips">
         您的购物车是空的，快去逛逛吧
@@ -68,7 +69,8 @@ export default {
   name: 'CartPage',
   data() {
     return {
-      isEdit: false
+      isEdit: false,
+      isLoading: true // 默认空页面不显示
     }
   },
   components: {
@@ -86,8 +88,9 @@ export default {
       }
     }
   },
-  created () {
-    this.getCartList()
+  async created () {
+    await this.getCartList()
+    this.isLoading = false // 通过await等待，等待数据加载完成时再将隐藏空页面显示
   },
   methods: {
     ...mapActions('cart', ['getCartList']),
