@@ -18,6 +18,14 @@ Vue.directive('loading', {
     } else {
       el.style.display = binding.arg
     }
+  },
+
+  inserted: (el, binding) => {
+    if (binding.value) {
+      el.style.display = 'none'
+    } else {
+      el.style.display = binding.arg
+    }
   }
 })
 
