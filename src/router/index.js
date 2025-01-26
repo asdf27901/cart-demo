@@ -13,6 +13,8 @@ import Cart from '@/views/layout/cart.vue'
 import My from '@/views/layout/my.vue'
 import store from '@/store'
 import { getLocalItem } from '@/utils/storage'
+import Address from '@/views/address/index.vue'
+import edit from '@/views/address/edit.vue'
 
 Vue.use(VueRouter)
 
@@ -35,6 +37,9 @@ const routes = [
   { name: '支付页', path: '/pay', component: Pay },
   { name: '详情页', path: '/detail/:good_id', component: Detail },
   { name: '订单页', path: '/orders', component: Orders },
+  { name: '收货地址页', path: '/address', component: Address },
+  { name: '新建收货地址页', path: '/createAddress', component: edit },
+  { name: '编辑收货地址页', path: '/editAddress', component: edit }
 ]
 
 const router = new VueRouter({
@@ -60,7 +65,10 @@ const AUTH_PAGE_PATH = [
   '/cart',
   '/my',
   '/pay',
-  '/orders'
+  '/orders',
+  '/address',
+  '/createAddress',
+  '/editAddress'
 ]
 
 router.beforeEach((to, from, next) => {

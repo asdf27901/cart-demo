@@ -20,7 +20,9 @@ import {
   ActionSheet,
   Dialog,
   Badge,
-  Checkbox
+  Checkbox,
+  AddressList,
+  AddressEdit
 } from 'vant'
 
 Vue.use(Button)
@@ -44,3 +46,5 @@ Vue.use(ActionSheet)
 Vue.use(Dialog)
 Vue.use(Badge)
 Vue.use(Checkbox)
+Vue.use(AddressList)
+Vue.use(AddressEdit)
