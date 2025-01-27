@@ -98,9 +98,7 @@ export default {
           }
         } else {
           res = await addAddress(transferData)
-          console.log('调用前', this.addressList.length)
           await this.getAddressListAction()
-          console.log('调用后', this.addressList.length)
           if (this.addressList.length === 1) {
             this.setSelectedAddressId(this.addressList[0].address_id)
             setLocalItem('selectedAddressId', this.addressList[0].address_id)

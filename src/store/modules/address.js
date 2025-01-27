@@ -1,9 +1,10 @@
 import { fetchAddressList, fetchDefaultAddressId, fetchRegionList } from '@/api/address'
+import { getLocalItem } from '@/utils/storage'
 
 const state = {
   addressList: [],
   defaultAddressId: '',
-  selectedAddressId: '',
+  selectedAddressId: getLocalItem('selectedAddressId'),
   regionData: ''
 }
 

@@ -30,14 +30,14 @@
 
 <script>
 import { mapActions, mapGetters, mapMutations, mapState } from 'vuex'
-import { getLocalItem, setLocalItem } from '@/utils/storage'
+import { setLocalItem } from '@/utils/storage'
 
 export default {
   name: 'AddressIndex',
   async created () {
     await this.getDefaultAddressIdAction()
-    this.chosenAddressId = getLocalItem('selectedAddressId') || this.selectedAddressId || this.defaultAddressId
-    setLocalItem('selectedAddressId', this.chosenAddressId)
+    this.chosenAddressId = this.selectedAddressId || this.defaultAddressId
+    // setLocalItem('selectedAddressId', this.chosenAddressId)
     await this.getAddressListAction()
     this.setSelectedAddressId(this.chosenAddressId)
     this.isLoading = false
