@@ -46,7 +46,7 @@
             <span>合计：</span>
             <span>¥ <i class="totalPrice">{{ totalPrice }}</i></span>
           </div>
-          <div v-if="!isEdit" class="goPay" :class="{disabled: checkedNum <= 0}" @click="$router.push('/pay')">结算({{ checkedNum }})</div>
+          <div v-if="!isEdit" class="goPay" :class="{disabled: checkedNum <= 0}" @click="goPay">结算({{ checkedNum }})</div>
           <div v-else class="delete" :class="{disabled: checkedNum <= 0}" @click="del">删除({{ checkedNum }})</div>
         </div>
       </div>
@@ -78,7 +78,7 @@ export default {
   },
   computed: {
     ...mapState('cart', ['cartList']),
-    ...mapGetters('cart', ['totalPrice', 'goodsNum', 'checkedNum']),
+    ...mapGetters('cart', ['totalPrice', 'goodsNum', 'checkedNum', 'checkedGoods']),
     selectAll: {
       get() {
         return !!this.cartList.every(v => v.isChecked === true)
@@ -111,6 +111,17 @@ export default {
           this.$store.dispatch('cart/getCartList')
         }, 1500)
       })
+    },
+    goPay() {
+      if (this.checkedNum > 0) {
+        this.$router.push({
+          path: '/pay',
+          query: {
+            mode: 'cart',
+            cartIds: this.checkedGoods.map(value => value.id).join(',')
+          }
+        })
+      }
     }
   }
 }

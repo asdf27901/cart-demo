@@ -96,8 +96,8 @@
 
 <!--         有库存才显示提交按钮-->
         <div class="showbtn" v-if="goodDetail.stock_total > 0">
-          <div class="btn" v-if="title === '加入购物车'" @click="joinCartOrBuy">加入购物车</div>
-          <div class="btn now" v-else @click="joinCartOrBuy">立刻购买</div>
+          <div class="btn" v-if="title === '加入购物车'" @click="joinCart">加入购物车</div>
+          <div class="btn now" v-else @click="buyNow">立刻购买</div>
         </div>
 
         <div class="btn-none" v-else>该商品已抢完</div>
@@ -180,10 +180,16 @@ export default {
           }
         })
       }
+      this.$router.push({
+        path: '/pay',
+        query: {
+          mode: 'buyNow',
+          goodsId: this.goodDetail.goods_id,
+          goodsNum: this.buyCount,
+          goodsSkuId: this.goodDetail.skuList[0].goods_sku_id
+        }
+      })
     }
-  },
-  watch: {
-
   }
 }
 </script>
