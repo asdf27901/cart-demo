@@ -1,45 +1,32 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Login from '@/views/login/index.vue'
-import Layout from '@/views/layout/index.vue'
-import Search from '@/views/search/index.vue'
-import SearchList from '@/views/search/searchList.vue'
-import Pay from '@/views/pay/index.vue'
-import Detail from '@/views/detail/index.vue'
-import Orders from '@/views/orders/index.vue'
-import Home from '@/views/layout/home.vue'
-import Sort from '@/views/layout/sort.vue'
-import Cart from '@/views/layout/cart.vue'
-import My from '@/views/layout/my.vue'
 import store from '@/store'
 import { getLocalItem } from '@/utils/storage'
-import Address from '@/views/address/index.vue'
-import edit from '@/views/address/edit.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
-  { name: '登录', path: '/login', component: Login },
+  { name: '登录', path: '/login', component: () => import('@/views/login/index.vue') },
   {
     name: '初始页',
     path: '/',
-    component: Layout,
+    component: () => import('@/views/layout/index.vue'),
     children: [
-      { name: '主页', path: '/home', component: Home, meta: { cache: true } },
-      { name: '分类', path: '/sort', component: Sort, meta: { cache: true } },
-      { name: '购物车', path: '/cart', component: Cart },
-      { name: '我的', path: '/my', component: My },
+      { name: '主页', path: '/home', component: () => import('@/views/layout/home.vue'), meta: { cache: true } },
+      { name: '分类', path: '/sort', component: () => import('@/views/layout/sort.vue'), meta: { cache: true } },
+      { name: '购物车', path: '/cart', component: () => import('@/views/layout/cart.vue') },
+      { name: '我的', path: '/my', component: () => import('@/views/layout/my.vue') },
     ],
     redirect: '/home'
   },
-  { name: '搜索页', path: '/search', component: Search },
-  { name: '搜索列表', path: '/searchList', component: SearchList },
-  { name: '支付页', path: '/pay', component: Pay },
-  { name: '详情页', path: '/detail/:good_id', component: Detail },
-  { name: '订单页', path: '/orders', component: Orders },
-  { name: '收货地址页', path: '/address', component: Address },
-  { name: '新建收货地址页', path: '/createAddress', component: edit },
-  { name: '编辑收货地址页', path: '/editAddress', component: edit }
+  { name: '搜索页', path: '/search', component: () => import('@/views/search/index.vue') },
+  { name: '搜索列表', path: '/searchList', component: () => import('@/views/search/searchList.vue') },
+  { name: '支付页', path: '/pay', component: () => import('@/views/pay/index.vue') },
+  { name: '详情页', path: '/detail/:good_id', component: () => import('@/views/detail/index.vue') },
+  { name: '订单页', path: '/orders', component: () => import('@/views/orders/index.vue') },
+  { name: '收货地址页', path: '/address', component: () => import('@/views/address/index.vue') },
+  { name: '新建收货地址页', path: '/createAddress', component: () => import('@/views/address/edit.vue') },
+  { name: '编辑收货地址页', path: '/editAddress', component: () => import('@/views/address/edit.vue') }
 ]
 
 const router = new VueRouter({
