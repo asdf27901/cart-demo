@@ -22,7 +22,10 @@ import {
   Badge,
   Checkbox,
   AddressList,
-  AddressEdit
+  AddressEdit,
+  Tabs,
+  Tab,
+  List
 } from 'vant'
 
 Vue.use(Button)
@@ -48,3 +51,6 @@ Vue.use(Badge)
 Vue.use(Checkbox)
 Vue.use(AddressList)
 Vue.use(AddressEdit)
+Vue.use(Tabs)
+Vue.use(Tab)
+Vue.use(List)
