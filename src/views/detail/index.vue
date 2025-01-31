@@ -110,11 +110,13 @@
 import { fetchGoodDetail } from '@/api/goods'
 import { fetchCommentList, fetchCommentTotalCount } from '@/api/comment'
 import CustomStepper from '@/components/CustomStepper.vue'
-import { Dialog, Toast } from 'vant'
+import { Toast } from 'vant'
 import { addCard, cartCount } from '@/api/cart'
+import checkLoginConfirm from '@/mixin/checkLoginConfirm'
 
 export default {
   name: 'DetailIndex',
+  mixins: [checkLoginConfirm],
   async created () {
     const goodId = this.$route.params.good_id
     const [
@@ -152,33 +154,23 @@ export default {
       this.showSheet = !this.showSheet
       this.title = title
     },
-    async joinCartOrBuy() {
-      if (!this.$store.getters['user/token']) {
-        Dialog.confirm({
-          title: '温馨提示',
-          message: '此时需要登录才能继续操作哦',
-          confirmButtonText: '去登录',
-          cancelButtonText: '再逛逛'
-        }).then(() => {
-          this.$router.replace({
-            path: '/login',
-            query: {
-              back: this.$route.fullPath
-            }
-          })
-        }).catch(() => {
-          Dialog.close()
-        })
-      } else {
-        const res = await addCard(this.goodDetail.goods_id, this.buyCount, this.goodDetail.skuList[0].goods_sku_id)
-        Toast.success({
-          message: res.message,
-          forbidClick: true,
-          onClose: () => {
-            this.cartTotal = res.data.cartTotal
-            this.showSheet = !this.showSheet
-          }
-        })
+    async joinCart() {
+      if (!this.checkLogin()) {
+        return
+      }
+      const res = await addCard(this.goodDetail.goods_id, this.buyCount, this.goodDetail.skuList[0].goods_sku_id)
+      Toast.success({
+        message: res.message,
+        forbidClick: true,
+        onClose: () => {
+          this.cartTotal = res.data.cartTotal
+          this.showSheet = !this.showSheet
+        }
+      })
+    },
+    buyNow() {
+      if (!this.checkLogin()) {
+        return
       }
       this.$router.push({
         path: '/pay',
